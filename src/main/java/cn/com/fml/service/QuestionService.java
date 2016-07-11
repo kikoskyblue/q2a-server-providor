@@ -32,4 +32,16 @@ public interface QuestionService {
 	 * @return
 	 */
 	public String uploadUserAnswer(String quId, String answerId, String userId);
+	/**
+	 * 获取用户的待回答的问题ids
+	 * @param userId 用户id
+	 * @return
+	 */
+	public Set getUserQuIds(String userId);
+	/**
+	 * 随机获取用户的待回答的问题id
+	 * @param userId
+	 * @return
+	 */
+	public String getUserRandQuId(String userId);
 }

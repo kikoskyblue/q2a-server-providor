@@ -1,5 +1,6 @@
 package cn.com.fml.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,7 +43,27 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 	@Override
 	public String uploadUserAnswer(String quId, String answerId, String userId) {
 		// TODO Auto-generated method stub
+		List<String> keys = new ArrayList<String>();
+		String key = KeyUtils.formatQuInfo(quId);
+		keys.add(key);
+		List<String> args = new ArrayList<String>();
+		args.add(answerId);
+		jedisUtil.SCRIPT.evalsha(Constants.SCRIPT_INCRE_ANSWER_COUNT, keys, args);
 		return null;
+	}
+
+	@Override
+	public Set getUserQuIds(String userId) {
+		String key = KeyUtils.formatUserQuIdSet(userId);
+		Set quIds = jedisUtil.SETS.smembers(key);
+		return quIds;
+	}
+
+	@Override
+	public String getUserRandQuId(String userId) {
+		String key = KeyUtils.formatUserQuIdSet(userId);
+		String quId = jedisUtil.SETS.srandmembers(key);
+		return quId;
 	}
 
 }

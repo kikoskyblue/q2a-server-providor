@@ -1,18 +1,22 @@
 package cn.com.fml.utls;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import javax.annotation.PostConstruct;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import redis.clients.jedis.BinaryClient.LIST_POSITION;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.SortingParams;
 import redis.clients.util.SafeEncoder;
 
@@ -23,7 +27,7 @@ import redis.clients.util.SafeEncoder;
 @Component
 public class JedisUtil {
 
-	private Logger log = Logger.getLogger(this.getClass());
+	private Logger logger = LoggerFactory.getLogger(JedisUtil.class);
 	/** 缓存生存时间 */
 	private final int expire = 60000;
 	/** 操作Key的方法 */
@@ -38,11 +42,20 @@ public class JedisUtil {
 	public Hash HASH;
 	/** 对存储结构为Set(排序的)类型的操作 */
 	public SortSet SORTSET;
+	
+	public Script SCRIPT;
 	@Autowired
 	private JedisPool jedisPool;
 
 	private JedisUtil() {
-
+		KEYS = new Keys();
+		STRINGS = new Strings();
+		LISTS = new Lists();
+		SETS = new Sets();
+		HASH = new Hash();
+		SORTSET = new SortSet();
+		SCRIPT = new Script();
+		//SCRIPT.loadAllScripts();
 	}
 
 	/*
@@ -68,7 +81,9 @@ public class JedisUtil {
 	 * @return
 	 */
 	public Jedis getJedis() {
-		return jedisPool.getResource();
+		Jedis jedis = jedisPool.getResource();
+		jedis.select(4);
+		return jedis;
 	}
 
 //	private static final JedisUtil jedisUtil = new JedisUtil();
@@ -481,7 +496,19 @@ public class JedisUtil {
 			returnJedis(sjedis);
 			return set;
 		}
-
+		public String srandmembers(String key){
+			Jedis sjedis = null;
+			String value = null;
+			try{
+				sjedis = getJedis();
+				value = sjedis.srandmember(key);
+			}catch(Exception e){
+				logger.error("Error when get rand value from set", e);
+			}finally{
+				returnJedis(sjedis);
+			}
+			return value;
+		}
 		/**
 		 * 将成员从源集合移出放入目标集合 <br/>
 		 * 如果源集合不存在或不包哈指定成员，不进行任何操作，返回0<br/>
@@ -918,7 +945,23 @@ public class JedisUtil {
 			returnJedis(jedis);
 			return s;
 		}
-
+		public Map<String, Long> hsetall(String key, Map<String, String> allMap){
+			Jedis jedis = null;
+			Map<String, Long> results = new HashMap<String, Long>();
+			try{
+				jedis = getJedis();
+				for(Entry<String, String> entry : allMap.entrySet()){
+					String field = entry.getKey();
+					String value = entry.getValue();
+					long result = jedis.hset(key, field, value);
+					results.put(field, result);
+				}
+			}finally{
+				returnJedis(jedis);
+			}
+			
+			return results;
+		}
 		public long hset(String key, String fieid, byte[] value) {
 			Jedis jedis = getJedis();
 			long s = jedis.hset(key.getBytes(), fieid.getBytes(), value);
@@ -1649,6 +1692,51 @@ public class JedisUtil {
 		 * */
 		public String ltrim(String key, int start, int end) {
 			return ltrim(SafeEncoder.encode(key), start, end);
+		}
+	}
+	
+	public class Script{
+		private Map<String, String> shas = new HashMap<String, String>();
+		/**
+		 * redis加载所有lua脚本
+		 */
+		@PostConstruct
+		public void loadAllScripts(){
+			if(!LuaScripts.scripts.isEmpty()){
+				Jedis jedis = null;
+				try{
+					jedis = getJedis();
+					jedis.scriptFlush();
+					logger.info("Redis flush scripts");
+					for(Entry<String, String> entry : LuaScripts.scripts.entrySet()){
+						String key = entry.getKey();
+						String content = entry.getValue();
+						String sha = jedis.scriptLoad(content);
+						logger.info("Redis loaded script {} to {}", key, sha);
+						shas.put(key, sha);
+					}
+					logger.info("Redis load all scripts success");
+				}catch(Exception e){
+					logger.error("Error when load all scripts", e);
+				}finally{
+					returnJedis(jedis);
+				}
+			}
+		}
+		
+		public Object evalsha(String scriptName, List<String> keys, List<String> args){
+			Jedis jedis = null;
+			Object result = null;
+			try{
+				String sha = shas.get(scriptName);
+				jedis  = getJedis();
+				result = jedis.evalsha(sha, keys, args);
+			}catch(Exception e){
+				logger.error("Error when load all scripts", e);
+			}finally{
+				returnJedis(jedis);
+			}
+			return result;
 		}
 	}
 

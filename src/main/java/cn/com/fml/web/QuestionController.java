@@ -1,20 +1,44 @@
 package cn.com.fml.web;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.com.fml.service.QuestionService;
+import cn.com.fml.common.BaseController;
 
 @RestController
-@RequestMapping({"/qu"})
-public class QuestionController {
+@RequestMapping({"/quServer"})
+public class QuestionController extends BaseController{
 	private Logger logger = LoggerFactory.getLogger(QuestionController.class);
 	
-	@Autowired
-	private QuestionService quService;
+	@RequestMapping("/getQu")
+	public Map getQu(String userid){
+		/*Set quIds = quService.getUserQuIds(userid);
+		List quList = quService.getQuList(quIds);*/
+		String quId = quService.getUserRandQuId(userid);
+		Map quInfo = quService.getQu(quId);
+		Map<String, Object> result = formatReponse();
+		result.put("question", quInfo);
+		return result;
+	}
 	
+	@RequestMapping
+	public Map uploadAnswer(String userid, String questionId, String answerId){
+		quService.uploadUserAnswer(questionId, answerId, userid);
+		Map<String, Object> result = formatReponse();
+		return result;
+	}
 	
+	@RequestMapping
+	public Map getAnswer(String questionId){
+		List<Map> answers = quService.getAnswers(questionId);
+		Map<String, Object> result = formatReponse();
+		result.put("answers", result);
+		return result;
+	}
 }
