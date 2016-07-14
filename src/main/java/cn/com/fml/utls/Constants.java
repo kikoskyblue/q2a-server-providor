@@ -17,6 +17,7 @@ public class Constants {
 	public static final String USER_ID_MAP_SUFFIX_KEY = "_user_ids";
 	public static final String QU_ID_SET_SUFFIX_KEY = "_question_ids";
 	public static final String QU_ALDY_ID_SET_SUFFIX_KEY = "_question_aldy_ids";
+	public static final String QU_ALDY_COUNT_SUFFIX_KEY = "_question_aldy_count";
 	public static final String AD_ID_SET_SUFFIX_KEY = "_ad_ids";
 	public static final String SCORE_SUFFIX_KEY = "_score";
 	public static final String CASH_SUFFIX_KEY = "_cash";

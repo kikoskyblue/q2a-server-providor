@@ -14,8 +14,8 @@ public class BaseController {
 	@Autowired
 	protected QuestionService quService;
 	
-	/*@Autowired
-	protected UserService userService;*/
+	@Autowired
+	protected UserService userService;
 	
 	@Autowired
 	protected AdService adService;

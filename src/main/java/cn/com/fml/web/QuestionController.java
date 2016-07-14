@@ -29,8 +29,9 @@ public class QuestionController extends BaseController{
 	
 	@RequestMapping
 	public Map uploadAnswer(String userid, String questionId, String answerId){
-		quService.uploadUserAnswer(questionId, answerId, userid);
+		String score = quService.uploadUserAnswer(questionId, answerId, userid);
 		Map<String, Object> result = formatReponse();
+		result.put("userscore", score);
 		return result;
 	}
 	

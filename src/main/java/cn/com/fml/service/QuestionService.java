@@ -25,7 +25,7 @@ public interface QuestionService {
 	public List<Map> getAnswers(String quId);
 	/**
 	 * 更新问题答案比例
-	 * 更新用户已回答问题ids
+	 * 更新用户已回答问题ids,用户积分
 	 * @param quId
 	 * @param answerId
 	 * @param userId

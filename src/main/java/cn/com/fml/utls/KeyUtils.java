@@ -61,6 +61,15 @@ public class KeyUtils {
 		return key;
 	}
 	/**
+	 * 组装用户每日回答问题总数的KEY
+	 * @param userId
+	 * @return
+	 */
+	public static String formatUserAldyQuCount(String userId){
+		String key = String.format(Constants.USER_PREFIX_KEY+Constants.QU_ALDY_COUNT_SUFFIX_KEY, userId);
+		return key;
+	}
+	/**
 	 * 组装用户index的KEY
 	 * @return user_id_index
 	 */
@@ -83,6 +92,33 @@ public class KeyUtils {
 	 */
 	public static String formatUserScore(String userId){
 		String key = String.format(Constants.USER_PREFIX_KEY+Constants.SCORE_SUFFIX_KEY, userId);
+		return key;
+	}
+	/**
+	 * 组装用户提现KEY
+	 * @param userId 用户id
+	 * @return user_%s_cash
+	 */
+	public static String formatUserCash(String userId){
+		String key = String.format(Constants.USER_PREFIX_KEY+Constants.CASH_SUFFIX_KEY, userId);
+		return key;
+	}
+	/**
+	 * 组装用户提现log的KEY
+	 * @param userId
+	 * @return
+	 */
+	public static String formatUserCashLogMap(String userId){
+		String key = String.format(Constants.USER_PREFIX_KEY+Constants.CASH_SUFFIX_KEY+Constants.LOG_SUFFIX_KEY, userId);
+		return key;
+	}
+	/**
+	 * 组装用户对应的标签ids的KEY
+	 * @param userId 用户id
+	 * @return user_%s_lable_ids
+	 */
+	public static String formatUserLabelMap(String userId){
+		String key = String.format(Constants.USER_PREFIX_KEY+Constants.LABEL_ID_SET_SUFFIX_KEY, userId);
 		return key;
 	}
 	/**
@@ -116,6 +152,15 @@ public class KeyUtils {
 		return key;
 	}
 	/**
+	 * 组装标签对应的问题ids的KEY
+	 * @param labelId 标签id
+	 * @return label_%s_question_ids
+	 */
+	public static String formatLabelQuIdSet(String labelId){
+		String key = String.format(Constants.LABEL_PREFIX_KEY+Constants.QU_ID_SET_SUFFIX_KEY, labelId);
+		return key;
+	}
+	/**
 	 * 组装广告info的KEY
 	 * @param adId 广告id
 	 * @return ad_%s_info
@@ -133,4 +178,5 @@ public class KeyUtils {
 		String key = String.format(Constants.EXT_SYSTEM_PREFIX_KEY+Constants.USER_ID_MAP_SUFFIX_KEY, openId);
 		return key;
 	}
+	
 }
