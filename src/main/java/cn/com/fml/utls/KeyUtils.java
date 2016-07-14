@@ -95,6 +95,15 @@ public class KeyUtils {
 		return key;
 	}
 	/**
+	 * 组装用户获取积分log的KEY
+	 * @param userId 用户id
+	 * @return user_%s_score_log
+	 */
+	public static String formatUserScoreLogList(String userId){
+		String key = String.format(Constants.USER_PREFIX_KEY+Constants.SCORE_SUFFIX_KEY+Constants.LOG_SUFFIX_KEY, userId);
+		return key;
+	}
+	/**
 	 * 组装用户提现KEY
 	 * @param userId 用户id
 	 * @return user_%s_cash

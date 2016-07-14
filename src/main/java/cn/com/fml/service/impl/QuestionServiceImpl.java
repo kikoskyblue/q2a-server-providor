@@ -1,20 +1,21 @@
 package cn.com.fml.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-
-import redis.clients.jedis.Jedis;
 import cn.com.fml.common.BaseService;
 import cn.com.fml.service.QuestionService;
 import cn.com.fml.utls.BusiUtil;
 import cn.com.fml.utls.Constants;
+import cn.com.fml.utls.DateUtil;
 import cn.com.fml.utls.KeyUtils;
+
+import com.alibaba.fastjson.JSON;
 
 @Component
 public class QuestionServiceImpl extends BaseService implements QuestionService {
@@ -56,6 +57,14 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 		long userAldyQuCount = jedisUtil.STRINGS.incrBy(userAldyQuCountKey, 1L);
 		long score = BusiUtil.getSocre(userAldyQuCount);
 		long userScore = jedisUtil.STRINGS.incrBy(userScoreKey, score);
+		//记录用户获取积分的日志
+		String userScoreLogKey = KeyUtils.formatUserScoreLogList(userId);
+		long nowTime = DateUtil.getTime();
+		Map<String, Long> scoreLogMap = new HashMap<String, Long>();
+		scoreLogMap.put("score", score);
+		scoreLogMap.put("time", nowTime);
+		String scoreLogStr = JSON.toJSONString(scoreLogMap);
+		jedisUtil.LISTS.rpush(userScoreLogKey, scoreLogStr);
 		//更新用户已回答问题ids
 		String userAldyQuIdSetKey = KeyUtils.formatUserAldyQuIdSet(userId);
 		String userQuIdSetKey = KeyUtils.formatUserQuIdSet(userId);
