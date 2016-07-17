@@ -1,11 +1,19 @@
 package cn.com.fml.service.impl;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.stereotype.Component;
 
 import cn.com.fml.common.BaseService;
 import cn.com.fml.service.UserService;
+import cn.com.fml.utls.Constants;
+import cn.com.fml.utls.DateUtil;
 import cn.com.fml.utls.KeyUtils;
 
+import com.alibaba.fastjson.JSON;
+
+@Component
 public class UserServiceImpl extends BaseService implements UserService {
 
 	@Override
@@ -51,6 +59,10 @@ public class UserServiceImpl extends BaseService implements UserService {
 		jedisUtil.HASH.hsetall(userKey, user);
 		//新建用户标签
 		String userLabelKey = KeyUtils.formatUserLabelMap(userId);
+		jedisUtil.HASH.hset(userLabelKey, sysLableId, String.valueOf(Long.MAX_VALUE));
+		//新建标签用户
+		String labelUserKey = KeyUtils.formatLabelUserIdMap(sysLableId);
+		jedisUtil.HASH.hset(labelUserKey, userId, String.valueOf(Long.MAX_VALUE));
 		//新建用户待回答问题ids
 		String userQukey = KeyUtils.formatUserQuIdSet(userId);
 		String lableQuKey = KeyUtils.formatLabelAdIdSet(sysLableId);
@@ -67,10 +79,40 @@ public class UserServiceImpl extends BaseService implements UserService {
 	}
 
 	@Override
-	public String cash(String userId, String userAccount, long money) {
+	public long updateCash(String userId, String userAccount, long money) {
 		String cashKey = KeyUtils.formatUserCash(userId);
-		
+		long totalMoney = jedisUtil.STRINGS.incrBy(cashKey, money);
+		return totalMoney;
+	}
+
+	@Override
+	public String insertCashLog(String userId, String userAccount, long money) {
+		String cashLogkey = KeyUtils.formatUserCashLogList(userId);
+		Map<String, Object> cashLogMap = new HashMap<String, Object>();
+		cashLogMap.put("money", money);
+		cashLogMap.put("time", DateUtil.getTime());
+		String cashLogStr = JSON.toJSONString(cashLogMap);
+		jedisUtil.LISTS.rpush(cashLogkey, cashLogStr);
 		return null;
+	}
+
+	@Override
+	public long updateScore(String userId, long score) {
+		String userScoreKey = KeyUtils.formatUserScore(userId);
+		long userScore = jedisUtil.STRINGS.incrBy(userScoreKey, score);
+		return userScore;
+	}
+
+	@Override
+	public String insertScoreLog(String userId, long score) {
+		String userScoreLogKey = KeyUtils.formatUserScoreLogList(userId);
+		long nowTime = DateUtil.getTime();
+		Map<String, Long> scoreLogMap = new HashMap<String, Long>();
+		scoreLogMap.put("score", score);
+		scoreLogMap.put("time", nowTime);
+		String scoreLogStr = JSON.toJSONString(scoreLogMap);
+		jedisUtil.LISTS.rpush(userScoreLogKey, scoreLogStr);
+		return Constants.BUSI_CODE_SUCCESS;
 	}
 
 }

@@ -117,7 +117,7 @@ public class KeyUtils {
 	 * @param userId
 	 * @return
 	 */
-	public static String formatUserCashLogMap(String userId){
+	public static String formatUserCashLogList(String userId){
 		String key = String.format(Constants.USER_PREFIX_KEY+Constants.CASH_SUFFIX_KEY+Constants.LOG_SUFFIX_KEY, userId);
 		return key;
 	}
@@ -136,7 +136,10 @@ public class KeyUtils {
 	 * @return label_%s_user_ids
 	 */
 	public static String formatLabelUserIdMap(String id){
-		String key = String.format(Constants.LABEL_PREFIX_KEY+Constants.USER_ID_MAP_SUFFIX_KEY,id);
+		String format = Constants.LABEL_PREFIX_KEY+Constants.USER_ID_MAP_SUFFIX_KEY;
+		if(id == null)
+			return format;
+		String key = String.format(format,id);
 		return key;
 	}
 	/**

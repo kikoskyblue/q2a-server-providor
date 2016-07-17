@@ -43,5 +43,27 @@ public interface UserService {
 	 * @param money
 	 * @return
 	 */
-	public String cash(String userId, String userAccount, long money);
+	public long updateCash(String userId, String userAccount, long money);
+	/**
+	 * 新增用户提现日志
+	 * @param userId
+	 * @param userAccount
+	 * @param money
+	 * @return
+	 */
+	public String insertCashLog(String userId, String userAccount, long money);
+	/**
+	 * 更新用户积分
+	 * @param userId
+	 * @param score
+	 * @return
+	 */
+	public long updateScore(String userId, long score);
+	/**
+	 * 新增用户更新积分日志
+	 * @param userId
+	 * @param score
+	 * @return
+	 */
+	public String insertScoreLog(String userId, long score);
 }

@@ -33,7 +33,7 @@ public class JedisTest {
 		  keys.add("answers");
 		  
 		  List<String> argss = new ArrayList<String>();
-		  argss.add("2");
+		  argss.add("3");
 		  String abc = jedis.scriptLoad("local answers = redis.call('hget',KEYS[1],KEYS[2])\n"
 				  +"local lua_value = cjson.decode(answers)\n"
 				  +"for key, var in ipairs(lua_value) do\n"

@@ -47,7 +47,11 @@ public class JedisUtil {
 	@Autowired
 	private JedisPool jedisPool;
 
-	private JedisUtil() {
+	@PostConstruct
+	public void init(){
+		SCRIPT.loadAllScripts();
+	}
+	public JedisUtil() {
 		KEYS = new Keys();
 		STRINGS = new Strings();
 		LISTS = new Lists();
@@ -55,7 +59,6 @@ public class JedisUtil {
 		HASH = new Hash();
 		SORTSET = new SortSet();
 		SCRIPT = new Script();
-		//SCRIPT.loadAllScripts();
 	}
 
 	/*
@@ -1700,7 +1703,6 @@ public class JedisUtil {
 		/**
 		 * redis加载所有lua脚本
 		 */
-		@PostConstruct
 		public void loadAllScripts(){
 			if(!LuaScripts.scripts.isEmpty()){
 				Jedis jedis = null;

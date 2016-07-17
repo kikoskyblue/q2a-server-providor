@@ -35,4 +35,7 @@ public class Constants {
 	public static final String SCRIPT_INCRE_ANSWER_COUNT = "INCRE_ANSWER_COUNT";
 	
 	public static final String RESPONSE_CODE_SUCCESS = "200";
+	
+	public static final String BUSI_CODE_SUCCESS = "SUCCESS";
+	public static final String BUSI_CODE_FAILURE = "FAILURE";
 }

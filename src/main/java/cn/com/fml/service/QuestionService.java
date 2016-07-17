@@ -44,4 +44,9 @@ public interface QuestionService {
 	 * @return
 	 */
 	public String getUserRandQuId(String userId);
+//	/**
+//	 * 更新用户已回答问题ids
+//	 * @param quId 问题id
+//	 */
+//	public void updateUserAldyQuIds(String userId, String quId);
 }
