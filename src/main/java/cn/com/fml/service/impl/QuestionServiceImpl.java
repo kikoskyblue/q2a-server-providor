@@ -1,6 +1,7 @@
 package cn.com.fml.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +75,6 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 	
 	@Override
 	public String uploadUserAnswer(String quId, String answerId, String userId) {
-		//更新问题的答案选择比例
 		List<String> keys = new ArrayList<String>();
 		String quInfokey = KeyUtils.formatQuInfo(quId);
 		String userScoreKey = KeyUtils.formatUserScore(userId);
@@ -93,35 +93,13 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 		keys.add(userLabelKey);
 		keys.add(labelUserKey);
 		List<String> args = new ArrayList<String>();
+		args.add("answers");
 		args.add(answerId);
-		jedisUtil.SCRIPT.evalsha(Constants.SCRIPT_INCRE_ANSWER_COUNT, keys, args);
-		//更新用户积分，用户每日回答问题总数
-		
-		long userAldyQuCount = jedisUtil.STRINGS.incrBy(userAldyQuCountKey, 1L);
-		long score = BusiUtil.getSocre(userAldyQuCount);
-		long userScore = jedisUtil.STRINGS.incrBy(userScoreKey, score);
-		//记录用户获取积分的日志
-		
-		long nowTime = DateUtil.getTime();
-		Map<String, Long> scoreLogMap = new HashMap<String, Long>();
-		scoreLogMap.put("score", score);
-		scoreLogMap.put("time", nowTime);
-		String scoreLogStr = JSON.toJSONString(scoreLogMap);
-		jedisUtil.LISTS.rpush(userScoreLogKey, scoreLogStr);
-		//更新用户已回答问题ids
-		
-		jedisUtil.SETS.sadd(userAldyQuIdSetKey, quId);
-		jedisUtil.SETS.srem(userQuIdSetKey, quId);
-		
-		Map qu = getQu(quId, false);
-		String labelId = qu.get("labels").toString();
-		//更新用户标签
-		
-		jedisUtil.HASH.hset(userLabelKey, labelId, String.valueOf(Long.MAX_VALUE));
-		//更新标签用户
-		
-		jedisUtil.HASH.hset(labelUserKey, userId, String.valueOf(Long.MAX_VALUE));
-
+		args.add(String.valueOf(new Date().getTime()));
+		args.add(quId);
+		args.add(String.valueOf(Long.MAX_VALUE));
+		args.add(userId);
+		Object userScore = jedisUtil.SCRIPT.evalsha(Constants.SCRIPT_INCRE_ANSWER_COUNT, keys, args);
 		return String.valueOf(userScore);
 	}
 	/*@Override
