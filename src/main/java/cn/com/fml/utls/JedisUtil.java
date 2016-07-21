@@ -1734,7 +1734,7 @@ public class JedisUtil {
 				jedis  = getJedis();
 				result = jedis.evalsha(sha, keys, args);
 			}catch(Exception e){
-				logger.error("Error when load all scripts", e);
+				logger.error("Error when excute script", e);
 			}finally{
 				returnJedis(jedis);
 			}

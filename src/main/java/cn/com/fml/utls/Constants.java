@@ -33,6 +33,7 @@ public class Constants {
 	 * 脚本更新问题的被选择答案的次数
 	 */
 	public static final String SCRIPT_INCRE_ANSWER_COUNT = "INCRE_ANSWER_COUNT";
+	public static final String SCRIPT_UPLOAD_ANSWER_CONTENT = "UPLOAD_ANSWER_CONTENT";
 	
 	public static final String RESPONSE_CODE_SUCCESS = "200";
 	

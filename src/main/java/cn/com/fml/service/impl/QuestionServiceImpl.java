@@ -99,7 +99,7 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 		args.add(quId);
 		args.add(String.valueOf(Long.MAX_VALUE));
 		args.add(userId);
-		Object userScore = jedisUtil.SCRIPT.evalsha(Constants.SCRIPT_INCRE_ANSWER_COUNT, keys, args);
+		Object userScore = jedisUtil.SCRIPT.evalsha(Constants.SCRIPT_UPLOAD_ANSWER_CONTENT, keys, args);
 		return String.valueOf(userScore);
 	}
 	/*@Override
