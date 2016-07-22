@@ -1,6 +1,8 @@
 package cn.com.fml.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
@@ -46,6 +48,43 @@ public class UserServiceImpl extends BaseService implements UserService {
 
 	@Override
 	public Map createUser(Map user) {
+		String sysId = Constants.DEFAULT_SYS_ID;
+		String sysLableId= Constants.DEFAULT_LABLE_ID;
+		List<String> keys = new ArrayList<String>();
+		String userIndexKey = KeyUtils.formatUserIndex();
+		String extSystemUserKey = KeyUtils.formatExtSysUserIdMap(sysId);
+		String userKey = KeyUtils.formatUserInfo(null);
+		String userLabelKey = KeyUtils.formatUserLabelMap(null);
+		String labelUserKey = KeyUtils.formatLabelUserIdMap(sysLableId);
+		String userQukey = KeyUtils.formatUserQuIdSet(null);
+		String lableQuKey = KeyUtils.formatLabelAdIdSet(sysLableId);
+		String userScoreKey = KeyUtils.formatUserScore(null);
+		String userCashKey = KeyUtils.formatUserCash(null);
+		keys.add(userIndexKey);
+		keys.add(extSystemUserKey);
+		keys.add(userKey);
+		keys.add(userLabelKey);
+		keys.add(labelUserKey);
+		keys.add(userQukey);
+		keys.add(lableQuKey);
+		keys.add(userScoreKey);
+		keys.add(userCashKey);
+		
+		List<String> args = new ArrayList<String>();
+		String openId = user.get("openid").toString();
+		args.add(openId);
+		args.add(sysLableId);
+		String userJson = JSON.toJSONString(user);
+		args.add(userJson);
+		args.add(String.valueOf(Long.MAX_VALUE));
+		
+		Object userId = jedisUtil.SCRIPT.evalsha(Constants.SCRIPT_CREATE_USER_CONTENT, keys, args);
+		user.put("userid", userId);
+		return user;
+	}
+	
+	/*@Override
+	public Map createUser(Map user) {
 		String userIndexKey = KeyUtils.formatUserIndex();
 		String userId = String.valueOf(jedisUtil.STRINGS.incrBy(userIndexKey, 1L));
 		String sysLableId = "10000";
@@ -76,7 +115,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 		jedisUtil.STRINGS.set(userCashKey, "0");
 		
 		return user;
-	}
+	}*/
 
 	@Override
 	public long updateCash(String userId, String userAccount, long money) {

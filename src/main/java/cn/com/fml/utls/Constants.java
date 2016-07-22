@@ -34,9 +34,18 @@ public class Constants {
 	 */
 	public static final String SCRIPT_INCRE_ANSWER_COUNT = "INCRE_ANSWER_COUNT";
 	public static final String SCRIPT_UPLOAD_ANSWER_CONTENT = "UPLOAD_ANSWER_CONTENT";
+	public static final String SCRIPT_CREATE_USER_CONTENT = "CREATE_USER_CONTENT";
 	
 	public static final String RESPONSE_CODE_SUCCESS = "200";
 	
 	public static final String BUSI_CODE_SUCCESS = "SUCCESS";
 	public static final String BUSI_CODE_FAILURE = "FAILURE";
+	/**
+	 * 默认系统ID(微信公众号)
+	 */
+	public static final String DEFAULT_SYS_ID = "10000";
+	/**
+	 * 默认系统标签
+	 */
+	public static final String DEFAULT_LABLE_ID = "10000";
 }

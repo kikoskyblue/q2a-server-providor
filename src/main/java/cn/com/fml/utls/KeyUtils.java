@@ -36,7 +36,10 @@ public class KeyUtils {
 	 * @return user_%s_question_ids
 	 */
 	public static String formatUserQuIdSet(String id){
-		String key = String.format(Constants.USER_PREFIX_KEY+Constants.QU_ID_SET_SUFFIX_KEY,id);
+		String format = Constants.USER_PREFIX_KEY+Constants.QU_ID_SET_SUFFIX_KEY;
+		if(id == null)
+			return format;
+		String key = String.format(format,id);
 		return key;
 	}
 	/**
@@ -82,7 +85,10 @@ public class KeyUtils {
 	 * @return user_%s_info
 	 */
 	public static String formatUserInfo(String userId){
-		String key = String.format(Constants.USER_PREFIX_KEY+Constants.INFO_SUFFIX_KEY, userId);
+		String format = Constants.USER_PREFIX_KEY+Constants.INFO_SUFFIX_KEY;
+		if(userId == null)
+			return format;
+		String key = String.format(format, userId);
 		return key;
 	}
 	/**
@@ -91,7 +97,10 @@ public class KeyUtils {
 	 * @return user_%s_score
 	 */
 	public static String formatUserScore(String userId){
-		String key = String.format(Constants.USER_PREFIX_KEY+Constants.SCORE_SUFFIX_KEY, userId);
+		String format = Constants.USER_PREFIX_KEY+Constants.SCORE_SUFFIX_KEY;
+		if(userId == null)
+			return format;
+		String key = String.format(format, userId);
 		return key;
 	}
 	/**
@@ -109,7 +118,10 @@ public class KeyUtils {
 	 * @return user_%s_cash
 	 */
 	public static String formatUserCash(String userId){
-		String key = String.format(Constants.USER_PREFIX_KEY+Constants.CASH_SUFFIX_KEY, userId);
+		String format = Constants.USER_PREFIX_KEY+Constants.CASH_SUFFIX_KEY;
+		if(userId == null)
+			return format;
+		String key = String.format(format, userId);
 		return key;
 	}
 	/**
@@ -127,7 +139,10 @@ public class KeyUtils {
 	 * @return user_%s_lable_ids
 	 */
 	public static String formatUserLabelMap(String userId){
-		String key = String.format(Constants.USER_PREFIX_KEY+Constants.LABEL_ID_SET_SUFFIX_KEY, userId);
+		String format = Constants.USER_PREFIX_KEY+Constants.LABEL_ID_SET_SUFFIX_KEY;
+		if(userId == null)
+			return format;
+		String key = String.format(format, userId);
 		return key;
 	}
 	/**
@@ -160,7 +175,10 @@ public class KeyUtils {
 	 * @return label_%s_ad_ids
 	 */
 	public static String formatLabelAdIdSet(String labelId){
-		String key = String.format(Constants.LABEL_PREFIX_KEY+Constants.AD_ID_SET_SUFFIX_KEY, labelId);
+		String format = Constants.LABEL_PREFIX_KEY+Constants.AD_ID_SET_SUFFIX_KEY;
+		if(labelId == null)
+			return format;
+		String key = String.format(format, labelId);
 		return key;
 	}
 	/**
@@ -187,7 +205,10 @@ public class KeyUtils {
 	 * @return ext_system_%s_user_ids
 	 */
 	public static String formatExtSysUserIdMap(String openId){
-		String key = String.format(Constants.EXT_SYSTEM_PREFIX_KEY+Constants.USER_ID_MAP_SUFFIX_KEY, openId);
+		String format = Constants.EXT_SYSTEM_PREFIX_KEY+Constants.USER_ID_MAP_SUFFIX_KEY;
+		if(openId == null)
+			return format;
+		String key = String.format(format, openId);
 		return key;
 	}
 	

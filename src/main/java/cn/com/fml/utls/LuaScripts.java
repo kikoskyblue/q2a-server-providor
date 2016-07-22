@@ -74,9 +74,43 @@ public class LuaScripts {
 			+"  redis.log(redis.LOG_NOTICE, 'labelUserKey:'..labelUserKey)\n"
 			+"  redis.call('hset', labelUserKey, ARGV[6], ARGV[5])\n"
 			+"  return userScore";
+	public static final String CREATE_USER_CONTENT ="--新建用户id\n"
+			+"local userId = redis.call('incr',KEYS[1])\n"
+			+"redis.log(redis.LOG_NOTICE, 'userId:'..userId)\n"
+			+"--新建外部系统用户映射关系\n"
+			+"redis.call('hset',KEYS[2],ARGV[1],userId)\n"
+			+"redis.log(redis.LOG_NOTICE, KEYS[2]..' '..ARGV[1]..' '..'userId:'..userId)\n"
+			+"--新建用户信息\n"
+			+"local user = cjson.decode(ARGV[3])\n"
+			+"user['userid'] = userId\n"
+			+"local userKey = string.format(KEYS[3], userId)\n"
+			+"redis.log(redis.LOG_NOTICE, 'userKey:'..userKey)\n"
+			+"for key, var in pairs(user) do\n"
+			+"	redis.log(redis.LOG_NOTICE, 'key:'..key..';var:'..var)\n"
+			+"  redis.call('hset',userKey,key,var)\n"
+			+"end\n"
+			+"--新建用户标签\n"
+			+"local userLabelKey = string.format(KEYS[4],userId)\n"
+			+"redis.log(redis.LOG_NOTICE, 'userLabelKey:'..userLabelKey)\n"
+			+"redis.call('hset',userLabelKey,ARGV[2],ARGV[4])\n"
+			+"--新建标签用户\n"
+			+"redis.call('hset',KEYS[5],userId,ARGV[4])\n"
+			+"--新建用户待回答问题ids\n"
+			+"local userQukey = string.format(KEYS[6],userId)\n"
+			+"redis.log(redis.LOG_NOTICE, 'userQukey:'..userQukey)\n"
+			+"redis.call('sunionstore',userQukey,KEYS[7])\n"
+			+"--新建用户积分\n"
+			+"local userScoreKey = string.format(KEYS[8],userId)\n"
+			+"redis.log(redis.LOG_NOTICE, 'userScoreKey:'..userScoreKey)\n"
+			+"redis.call('set',userScoreKey,'0')\n"
+			+"local userCashKey = string.format(KEYS[9],userId)\n"
+			+"redis.log(redis.LOG_NOTICE, 'userCashKey:'..userCashKey)\n"
+			+"redis.call('set',userCashKey,'0')\n"
+			+"return userId";
 	public static Map<String, String> scripts = new HashMap<String, String>();
 	static{
 		//scripts.put(Constants.SCRIPT_INCRE_ANSWER_COUNT, INCRE_ANSWER_COUNT_CONTENT);
 		scripts.put(Constants.SCRIPT_UPLOAD_ANSWER_CONTENT, UPLOAD_ANSWER_CONTENT);
+		scripts.put(Constants.SCRIPT_CREATE_USER_CONTENT, CREATE_USER_CONTENT);
 	}
 }
