@@ -12,7 +12,7 @@ public class Constants {
 	public static final String EXT_SYSTEM_PREFIX_KEY = "ext_system_%s";
 	
 	public static final String INFO_SUFFIX_KEY = "_info";
-	public static final String LABEL_ID_SET_SUFFIX_KEY = "_lable_ids";
+	public static final String LABEL_ID_SET_SUFFIX_KEY = "_label_ids";
 	public static final String USER_ID_SUFFIX_KEY = "_user_id";
 	public static final String USER_ID_MAP_SUFFIX_KEY = "_user_ids";
 	public static final String QU_ID_SET_SUFFIX_KEY = "_question_ids";
@@ -33,8 +33,9 @@ public class Constants {
 	 * 脚本更新问题的被选择答案的次数
 	 */
 	public static final String SCRIPT_INCRE_ANSWER_COUNT = "INCRE_ANSWER_COUNT";
-	public static final String SCRIPT_UPLOAD_ANSWER_CONTENT = "UPLOAD_ANSWER_CONTENT";
-	public static final String SCRIPT_CREATE_USER_CONTENT = "CREATE_USER_CONTENT";
+	public static final String SCRIPT_UPLOAD_ANSWER_CONTENT = "UploadAnswer";
+	public static final String SCRIPT_CREATE_USER_CONTENT = "CreateUser";
+	public static final String SCRIPT_EXPIRE_LABELUSER_CONTENT = "ExpireLabelUser";
 	
 	public static final String RESPONSE_CODE_SUCCESS = "200";
 	

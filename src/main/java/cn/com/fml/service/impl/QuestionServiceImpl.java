@@ -2,7 +2,6 @@ package cn.com.fml.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,9 +10,7 @@ import org.springframework.stereotype.Component;
 
 import cn.com.fml.common.BaseService;
 import cn.com.fml.service.QuestionService;
-import cn.com.fml.utls.BusiUtil;
 import cn.com.fml.utls.Constants;
-import cn.com.fml.utls.DateUtil;
 import cn.com.fml.utls.KeyUtils;
 
 import com.alibaba.fastjson.JSON;
@@ -36,15 +33,17 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 	public Map getQu(String id, boolean excludeLabel) {
 		String key =  KeyUtils.formatQuInfo(id);
 		Map qu = jedisUtil.HASH.hgetAll(key);
-		String answersStr = qu.get("answers").toString();
-		List<Map> answers = JSON.parseArray(answersStr, Map.class);
-		if(excludeLabel){
-			for(Map map:answers){
-				map.remove("label");
+		if(!qu.isEmpty()){
+			String answersStr = qu.get("answers").toString();
+			List<Map> answers = JSON.parseArray(answersStr, Map.class);
+			if(excludeLabel){
+				for(Map map:answers){
+					map.remove("label");
+				}
+				qu.remove("labels");
 			}
-			qu.remove("labels");
+			qu.put("answers", answers);
 		}
-		qu.put("answers", answers);
 //		String labelsStr = qu.get("labels").toString();
 //		List labels = JSON.parseArray(labelsStr, String.class);
 //		qu.put("labels", labels);
@@ -84,6 +83,8 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 		String userQuIdSetKey = KeyUtils.formatUserQuIdSet(userId);
 		String userLabelKey = KeyUtils.formatUserLabelMap(userId);
 		String labelUserKey = KeyUtils.formatLabelUserIdMap(null);
+		String userQuKey = KeyUtils.formatUserQuIdSet(userId);
+		String labelQuKey = KeyUtils.formatLabelQuIdSet(null);
 		keys.add(quInfokey);
 		keys.add(userScoreKey);
 		keys.add(userAldyQuCountKey);
@@ -92,6 +93,8 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 		keys.add(userQuIdSetKey);
 		keys.add(userLabelKey);
 		keys.add(labelUserKey);
+		keys.add(userQuKey);
+		keys.add(labelQuKey);
 		List<String> args = new ArrayList<String>();
 		args.add("answers");
 		args.add(answerId);
@@ -144,9 +147,9 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 	}*/
 
 	@Override
-	public Set getUserQuIds(String userId) {
+	public Set<String> getUserQuIds(String userId) {
 		String key = KeyUtils.formatUserQuIdSet(userId);
-		Set quIds = jedisUtil.SETS.smembers(key);
+		Set<String> quIds = jedisUtil.SETS.smembers(key);
 		return quIds;
 	}
 

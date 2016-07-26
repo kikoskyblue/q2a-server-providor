@@ -136,7 +136,7 @@ public class KeyUtils {
 	/**
 	 * 组装用户对应的标签ids的KEY
 	 * @param userId 用户id
-	 * @return user_%s_lable_ids
+	 * @return user_%s_label_ids
 	 */
 	public static String formatUserLabelMap(String userId){
 		String format = Constants.USER_PREFIX_KEY+Constants.LABEL_ID_SET_SUFFIX_KEY;
@@ -187,7 +187,11 @@ public class KeyUtils {
 	 * @return label_%s_question_ids
 	 */
 	public static String formatLabelQuIdSet(String labelId){
-		String key = String.format(Constants.LABEL_PREFIX_KEY+Constants.QU_ID_SET_SUFFIX_KEY, labelId);
+		String format = Constants.LABEL_PREFIX_KEY+Constants.QU_ID_SET_SUFFIX_KEY;
+		if(labelId == null){
+			return format;
+		}
+		String key = String.format(format, labelId);
 		return key;
 	}
 	/**

@@ -30,7 +30,7 @@ public class QuestionController extends BaseController{
 		return result;
 	}
 	
-	@RequestMapping(value="uploadAnswer",method=RequestMethod.POST)
+	@RequestMapping(value="uploadAnswer",method=RequestMethod.GET)
 	public Map uploadAnswer(String userId, String questionId, String answerId){
 		String score = quService.uploadUserAnswer(questionId, answerId, userId);
 		Map<String, Object> result = formatReponse();

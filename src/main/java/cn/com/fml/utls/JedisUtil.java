@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import redis.clients.jedis.BinaryClient.LIST_POSITION;
@@ -47,6 +48,9 @@ public class JedisUtil {
 	@Autowired
 	private JedisPool jedisPool;
 
+	@Value("${fml.redis.index:4}")
+	private int index;
+	
 	@PostConstruct
 	public void init(){
 		SCRIPT.loadAllScripts();
@@ -61,19 +65,6 @@ public class JedisUtil {
 		SCRIPT = new Script();
 	}
 
-	/*
-	 * static { JedisPoolConfig config = new JedisPoolConfig();
-	 * config.setMaxActive(JRedisPoolConfig.MAX_ACTIVE);
-	 * config.setMaxIdle(JRedisPoolConfig.MAX_IDLE);
-	 * config.setMaxWait(JRedisPoolConfig.MAX_WAIT);
-	 * config.setTestOnBorrow(JRedisPoolConfig.TEST_ON_BORROW);
-	 * config.setTestOnReturn(JRedisPoolConfig.TEST_ON_RETURN); //redis如果设置了密码：
-	 * jedisPool = new JedisPool(config, JRedisPoolConfig.REDIS_IP,
-	 * JRedisPoolConfig.REDIS_PORT, 10000,JRedisPoolConfig.REDIS_PASSWORD);
-	 * //redis未设置了密码： // jedisPool = new JedisPool(config,
-	 * JRedisPoolConfig.REDIS_IP, // JRedisPoolConfig.REDIS_PORT); }
-	 */
-
 	public JedisPool getPool() {
 		return jedisPool;
 	}
@@ -85,20 +76,9 @@ public class JedisUtil {
 	 */
 	public Jedis getJedis() {
 		Jedis jedis = jedisPool.getResource();
-		jedis.select(4);
+		jedis.select(index);
 		return jedis;
 	}
-
-//	private static final JedisUtil jedisUtil = new JedisUtil();
-//
-//	/**
-//	 * 获取JedisUtil实例
-//	 * 
-//	 * @return
-//	 */
-//	public static JedisUtil getInstance() {
-//		return jedisUtil;
-//	}
 
 	/**
 	 * 回收jedis

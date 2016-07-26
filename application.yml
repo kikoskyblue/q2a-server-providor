@@ -1,3 +1,8 @@
+httpsessions.active: 10000
+httpsessions.max: 10000
 fml:
   redis:
-  
+  job:
+   expireLabelUser:
+    enable: true
+    cron: 0 0/2 * * * ?

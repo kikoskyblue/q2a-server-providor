@@ -1,9 +1,21 @@
 package cn.com.fml.utls;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
+
 public class LuaScripts {
+	private static Logger logger = LoggerFactory.getLogger(LuaScripts.class);
+	
 	public static final String INCRE_ANSWER_COUNT_CONTENT =
 			   "local answers = redis.call('hget',KEYS[1],KEYS[2])\n"
 			  +"local lua_value = cjson.decode(answers)\n"
@@ -68,11 +80,13 @@ public class LuaScripts {
 			+"  redis.log(redis.LOG_NOTICE, KEYS[4]..' remove '..ARGV[4])\n"
 			+"  --更新用户标签,标签用户\n"
 			+"  --local lable = redis.call('hget',KEYS[6],'labels')\n"
-			+"  redis.log(redis.LOG_NOTICE, 'labelId:'..lable)\n"
-			+"  redis.call('hset', KEYS[7], lable, ARGV[5])\n"
-			+"  local labelUserKey = string.format(KEYS[8], lable)\n"
-			+"  redis.log(redis.LOG_NOTICE, 'labelUserKey:'..labelUserKey)\n"
-			+"  redis.call('hset', labelUserKey, ARGV[6], ARGV[5])\n"
+			+"	if lable ~= nil and lable ~= '' then\n"
+			+"    redis.log(redis.LOG_NOTICE, 'labelId:'..lable)\n"
+			+"    redis.call('hset', KEYS[7], lable, ARGV[5])\n"
+			+"    local labelUserKey = string.format(KEYS[8], lable)\n"
+			+"    redis.log(redis.LOG_NOTICE, 'labelUserKey:'..labelUserKey)\n"
+			+"    redis.call('hset', labelUserKey, ARGV[6], ARGV[5])\n"
+			+"  end\n"
 			+"  return userScore";
 	public static final String CREATE_USER_CONTENT ="--新建用户id\n"
 			+"local userId = redis.call('incr',KEYS[1])\n"
@@ -110,7 +124,33 @@ public class LuaScripts {
 	public static Map<String, String> scripts = new HashMap<String, String>();
 	static{
 		//scripts.put(Constants.SCRIPT_INCRE_ANSWER_COUNT, INCRE_ANSWER_COUNT_CONTENT);
-		scripts.put(Constants.SCRIPT_UPLOAD_ANSWER_CONTENT, UPLOAD_ANSWER_CONTENT);
-		scripts.put(Constants.SCRIPT_CREATE_USER_CONTENT, CREATE_USER_CONTENT);
+//		scripts.put(Constants.SCRIPT_UPLOAD_ANSWER_CONTENT, UPLOAD_ANSWER_CONTENT);
+//		scripts.put(Constants.SCRIPT_CREATE_USER_CONTENT, CREATE_USER_CONTENT);
+		load();
+	}
+	/**
+	 * 从lua文件加载脚本
+	 * @throws IOException 
+	 */
+	public static void load() {
+		String[] type = {"lua"};
+		String path = LuaScripts.class.getClassLoader().getResource("lua").getPath();
+		File directory = new File(path);
+		if(directory.isDirectory()){
+			Collection<File> files = FileUtils.listFiles(directory, type, false);
+			for(File file : files){
+				String fileName = file.getName();
+				logger.info("Start to read file:{}", fileName);
+				String content = "";
+				try {
+					content = FileUtils.readFileToString(file, "UTF-8");
+				} catch (IOException e) {
+					logger.error("Error when read file "+fileName, e);
+				}
+				if(!StringUtils.isEmpty(content))
+					scripts.put(fileName.replace(".lua", ""), content);
+			}
+			logger.info("Loaded all files:{}", scripts.size());
+		}
 	}
 }
