@@ -36,10 +36,12 @@ public class Constants {
 	public static final String SCRIPT_UPLOAD_ANSWER_CONTENT = "UploadAnswer";
 	public static final String SCRIPT_CREATE_USER_CONTENT = "CreateUser";
 	public static final String SCRIPT_EXPIRE_LABELUSER_CONTENT = "ExpireLabelUser";
+	public static final String SCRIPT_RESET_USER_ALDY_COUNT = "ResetUserAldyCount";
 	
 	public static final String RESPONSE_CODE_SUCCESS = "200";
 	
 	public static final String BUSI_CODE_SUCCESS = "SUCCESS";
+	public static final String BUSI_CODE_OK = "OK";
 	public static final String BUSI_CODE_FAILURE = "FAILURE";
 	/**
 	 * 默认系统ID(微信公众号)

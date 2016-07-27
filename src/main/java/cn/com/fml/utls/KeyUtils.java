@@ -69,7 +69,11 @@ public class KeyUtils {
 	 * @return
 	 */
 	public static String formatUserAldyQuCount(String userId){
-		String key = String.format(Constants.USER_PREFIX_KEY+Constants.QU_ALDY_COUNT_SUFFIX_KEY, userId);
+		String format = Constants.USER_PREFIX_KEY+Constants.QU_ALDY_COUNT_SUFFIX_KEY;
+		if(userId == null){
+			return format;
+		}
+		String key = String.format(format, userId);
 		return key;
 	}
 	/**

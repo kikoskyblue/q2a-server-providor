@@ -1,3 +1,13 @@
+local getScore = function (num)
+  if num >= 0 and num <= 10 then
+    return 10
+  elseif num <= 20 then
+    return 5
+  else
+    return 1
+  end
+end
+
 --更新问题的答案选择比例 
 local answerStr = redis.call('hget',KEYS[1],ARGV[1])
 local answers = cjson.decode(answerStr)
@@ -18,15 +28,15 @@ redis.log(redis.LOG_NOTICE, 'Incre answer`s count success')
 --更新用户积分，用户每日回答问题总数
 local userAldyQuCount = redis.call('incr',KEYS[3])
 redis.log(redis.LOG_NOTICE, 'userAldyQuCount:'..userAldyQuCount)
---local score = getSocre(userAldyQuCount)
-local score
-if userAldyQuCount >= 0 and userAldyQuCount <= 10 then
-  score = 10
-elseif userAldyQuCount <= 20 then
-  score = 5
-else
-  score = 1
-end
+local score = getScore(userAldyQuCount)
+--local score
+--if userAldyQuCount >= 0 and userAldyQuCount <= 10 then
+--  score = 10
+--elseif userAldyQuCount <= 20 then
+--  score = 5
+--else
+--  score = 1
+--end
 redis.log(redis.LOG_NOTICE, 'score:'..score)
 local userScore = redis.call('incrBy',KEYS[2],score)
 redis.log(redis.LOG_NOTICE, 'userScore:'..userScore)
