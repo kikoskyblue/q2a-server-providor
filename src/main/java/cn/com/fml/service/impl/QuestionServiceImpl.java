@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import cn.com.fml.common.BaseService;
 import cn.com.fml.service.QuestionService;
 import cn.com.fml.utls.Constants;
+import cn.com.fml.utls.DateUtil;
 import cn.com.fml.utls.KeyUtils;
 
 import com.alibaba.fastjson.JSON;
@@ -98,9 +99,9 @@ public class QuestionServiceImpl extends BaseService implements QuestionService 
 		List<String> args = new ArrayList<String>();
 		args.add("answers");
 		args.add(answerId);
-		args.add(String.valueOf(new Date().getTime()));
+		args.add(String.valueOf(DateUtil.getTime()));
 		args.add(quId);
-		args.add(String.valueOf(Long.MAX_VALUE));
+		args.add(String.valueOf(DateUtil.getFutureTime("1y")));
 		args.add(userId);
 		Object userScore = jedisUtil.SCRIPT.evalsha(Constants.SCRIPT_UPLOAD_ANSWER_CONTENT, keys, args);
 		return String.valueOf(userScore);

@@ -1,7 +1,6 @@
 package cn.com.fml.job;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import cn.com.fml.utls.Constants;
+import cn.com.fml.utls.DateUtil;
 import cn.com.fml.utls.JedisUtil;
 import cn.com.fml.utls.KeyUtils;
 
@@ -40,7 +40,7 @@ public class ExpireLabelUserJob {
 			keys.add(KeyUtils.formatUserQuIdSet(null));
 			keys.add(KeyUtils.formatLabelQuIdSet(null));
 			List<String> args = new ArrayList<String>();
-			args.add(String.valueOf(new Date().getTime()));
+			args.add(String.valueOf(DateUtil.getTime()));
 			
 			Object result = jedisUtil.SCRIPT.evalsha(Constants.SCRIPT_EXPIRE_LABELUSER_CONTENT,
 					keys, args);

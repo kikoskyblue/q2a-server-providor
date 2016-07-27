@@ -37,11 +37,8 @@ public class ResetUserAldyCountJob {
 			List<String> keys = new ArrayList<String>();
 			keys.add(KeyUtils.formatUserAldyQuCount(null).replace("%s", "*"));
 			
-			List<String> args = new ArrayList<String>();
-			args.add(String.valueOf(new Date().getTime()));
-			
 			Object result = jedisUtil.SCRIPT.evalsha(Constants.SCRIPT_RESET_USER_ALDY_COUNT,
-					keys, args);
+					keys, null);
 			if(Constants.BUSI_CODE_SUCCESS.equalsIgnoreCase((String) result)){
 				logger.info("ResetUserAldyCountJob excute sucessfully");
 			}else{
